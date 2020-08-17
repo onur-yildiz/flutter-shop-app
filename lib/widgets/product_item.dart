@@ -31,7 +31,7 @@ class ProductItem extends StatelessWidget {
                   .bold), // TODO: this also changes its color, resarch for a way to just change its weight
         ),
       ),
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).accentColor,
     );
     // return Container(
     //   padding: const EdgeInsets.all(5),
@@ -77,7 +77,7 @@ class ProductItem extends StatelessWidget {
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
               ),
               onPressed: product.toggleFavoriteStatus,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).errorColor,
             ),
           ),
         ),
@@ -100,7 +100,7 @@ class ProductItem extends StatelessWidget {
                 product.imageUrl,
               );
             },
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).primaryColor,
           ),
         ),
       ),
