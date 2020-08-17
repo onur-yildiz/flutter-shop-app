@@ -6,7 +6,7 @@ import 'package:flutter_shop_app/providers/cart.dart';
 import 'package:flutter_shop_app/providers/product.dart';
 import 'package:flutter_shop_app/screens/product_detail_screen.dart';
 
-class ProductItem extends StatelessWidget {
+class ProductItem extends StatefulWidget {
   // final String id;
   // final String title;
   // final String imageUrl;
@@ -20,6 +20,11 @@ class ProductItem extends StatelessWidget {
   //   this.price,
   // }) : super(key: key);
 
+  @override
+  _ProductItemState createState() => _ProductItemState();
+}
+
+class _ProductItemState extends State<ProductItem> {
   Widget _buildPriceTag(double price, BuildContext context) {
     return Chip(
       label: FittedBox(
@@ -99,6 +104,21 @@ class ProductItem extends StatelessWidget {
                 product.price,
                 product.imageUrl,
               );
+              Scaffold.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Added item to the cart.',
+                    ),
+                    duration: Duration(seconds: 2),
+                    action: SnackBarAction(
+                        label: 'UNDO',
+                        onPressed: () {
+                          cart.removeSingleItem(product.id);
+                        }),
+                  ),
+                );
             },
             color: Theme.of(context).primaryColor,
           ),
