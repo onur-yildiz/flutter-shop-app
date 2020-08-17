@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
           //       displayColor: Colors.red,
           //     ),
           //TODO: LOOK MORE INTO THEME-ING
+          // iconTheme: IconThemeData(size: ),
           fontFamily: 'Lato',
         ),
         // home: ProductsOverviewScreen(),
