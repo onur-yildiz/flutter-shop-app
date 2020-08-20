@@ -22,7 +22,7 @@ class CartItem extends StatelessWidget {
     this.imageUrl,
   }) : super(key: key);
 
-  Widget buildDismissibleDeleteBox(
+  Widget buildDismissibleBackground(
       {bool toLeft = false, BuildContext context}) {
     return Container(
       color: Theme.of(context).errorColor,
@@ -43,11 +43,36 @@ class CartItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: ValueKey(id),
-      background: buildDismissibleDeleteBox(context: context),
+      background: buildDismissibleBackground(context: context),
       secondaryBackground:
-          buildDismissibleDeleteBox(toLeft: true, context: context),
+          buildDismissibleBackground(toLeft: true, context: context),
       onDismissed: (direction) {
         Provider.of<Cart>(context, listen: false).removeItem(productId);
+      },
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text(
+              'Do you want to remove the item from the cart?',
+            ),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop(false);
+                },
+                child: Text('No'),
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop(true);
+                },
+                child: Text('Yes'),
+              )
+            ],
+          ),
+        );
       },
       child: Card(
         margin: const EdgeInsets.symmetric(
