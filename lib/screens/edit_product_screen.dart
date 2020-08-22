@@ -37,8 +37,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.didChangeDependencies();
     final productId = ModalRoute.of(context).settings.arguments as String;
     if (productId != null) {
-      _editedProduct =
-          Provider.of<Products>(context, listen: false).findById(productId);
+      _editedProduct = Provider.of<Products>(context, listen: false).findById(productId);
       _imageUrlController.text = _editedProduct.imageUrl;
     }
   }
@@ -77,10 +76,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading = true;
     });
     if (_editedProduct.id != null) {
-      productsData.updateProduct(_editedProduct.id, _editedProduct);
-      setState(() {
-        _isLoading = false;
-      });
+      try {
+        await productsData.updateProduct(_editedProduct.id, _editedProduct);
+      } catch (e) {
+        throw e;
+      }
     } else {
       try {
         await productsData.addProduct(_editedProduct);
@@ -100,13 +100,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ],
           ),
         );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
       }
+      // finally {
+      //   setState(() {
+      //     _isLoading = false;
+      //   });
+      //   Navigator.of(context).pop();
+      // }
     }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
   }
 
   @override
@@ -149,7 +154,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       onSaved: (newValue) {
                         _editedProduct = Product(
                           id: _editedProduct.id,
-                          title: newValue,
+                          title: newValue.trim(),
                           description: _editedProduct.description,
                           price: _editedProduct.price,
                           imageUrl: _editedProduct.imageUrl,
@@ -158,9 +163,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       },
                     ),
                     TextFormField(
-                      initialValue: _editedProduct.price == 0.0
-                          ? null
-                          : _editedProduct.price.toString(),
+                      initialValue:
+                          _editedProduct.price == 0.0 ? null : _editedProduct.price.toString(),
                       decoration: InputDecoration(
                         labelText: 'Price',
                       ),
@@ -168,8 +172,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       keyboardType: TextInputType.number,
                       focusNode: _priceFocusNode,
                       onFieldSubmitted: (_) {
-                        FocusScope.of(context)
-                            .requestFocus(_descriptionFocusNode);
+                        FocusScope.of(context).requestFocus(_descriptionFocusNode);
                       },
                       validator: (value) {
                         if (value.isEmpty) {
@@ -215,7 +218,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         _editedProduct = Product(
                           id: _editedProduct.id,
                           title: _editedProduct.title,
-                          description: newValue,
+                          description: newValue.trim(),
                           price: _editedProduct.price,
                           imageUrl: _editedProduct.imageUrl,
                           isFavorite: _editedProduct.isFavorite,
@@ -261,8 +264,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               if (value.isEmpty) {
                                 return 'Please provide a URL.';
                               }
-                              if (!value.startsWith('https') ||
-                                  !value.startsWith('http')) {
+                              if (!value.startsWith('https') || !value.startsWith('http')) {
                                 return 'Please enter a valid URL.';
                               }
                               if (!value.endsWith('jpg') &&
@@ -278,7 +280,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 title: _editedProduct.title,
                                 description: _editedProduct.description,
                                 price: _editedProduct.price,
-                                imageUrl: newValue,
+                                imageUrl: newValue.trim(),
                                 isFavorite: _editedProduct.isFavorite,
                               );
                             },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_shop_app/widgets/app_drawer.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_shop_app/providers/cart.dart';
 import 'package:flutter_shop_app/screens/cart_screen.dart';
 import 'package:flutter_shop_app/widgets/badge.dart';
 import 'package:flutter_shop_app/widgets/products_grid.dart';
+
+import '../providers/products.dart';
 
 enum FilterOptions {
   Favorites,
@@ -19,6 +22,24 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavorites = false;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context, listen: false)
+          .fetchAndSetProducts()
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +88,17 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(showFavorites: _showOnlyFavorites),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : RefreshIndicator(
+              onRefresh: () async {
+                Provider.of<Products>(context, listen: false)
+                    .fetchAndSetProducts();
+              },
+              child: ProductsGrid(showFavorites: _showOnlyFavorites),
+            ),
     );
   }
 }

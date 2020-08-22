@@ -18,6 +18,7 @@ class UserProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
     return ListTile(
       title: GestureDetector(
           onTap: () {
@@ -44,8 +45,7 @@ class UserProductItem extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(EditProductScreen.routeName, arguments: id);
+              Navigator.of(context).pushNamed(EditProductScreen.routeName, arguments: id);
             },
           ),
           IconButton(
@@ -78,8 +78,19 @@ class UserProductItem extends StatelessWidget {
                   ),
                 ).then((value) {
                   if (value) {
-                    Provider.of<Products>(context, listen: false)
-                        .deleteProduct(id);
+                    Provider.of<Products>(context, listen: false).deleteProduct(id).catchError((e) {
+                      scaffold
+                        ..removeCurrentSnackBar()
+                        ..showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              e.toString(),
+                              textAlign: TextAlign.center,
+                            ),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                    });
                   }
                 });
               }),
