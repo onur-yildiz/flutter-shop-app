@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../screens/edit_product_screen.dart';
 import '../providers/products.dart';
+import '../screens/product_detail_screen.dart';
 
 class UserProductItem extends StatelessWidget {
   final String id;
@@ -18,9 +19,24 @@ class UserProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title),
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(imageUrl),
+      title: GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              ProductDetailScreen.routeName,
+              arguments: id,
+            );
+          },
+          child: Text(title)),
+      leading: GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed(
+            ProductDetailScreen.routeName,
+            arguments: id,
+          );
+        },
+        child: CircleAvatar(
+          backgroundImage: NetworkImage(imageUrl),
+        ),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,

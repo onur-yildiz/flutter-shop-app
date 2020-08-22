@@ -33,15 +33,18 @@ class UserProductsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: ListView.builder(
           itemCount: productsData.items.length,
-          itemBuilder: (ctx, i) => Column(
-            children: [
-              UserProductItem(
-                id: productsData.items[i].id,
-                title: productsData.items[i].title,
-                imageUrl: productsData.items[i].imageUrl,
-              ),
-              Divider(),
-            ],
+          itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+            value: productsData.items[i],
+            child: Column(
+              children: [
+                UserProductItem(
+                  id: productsData.items[i].id,
+                  title: productsData.items[i].title,
+                  imageUrl: productsData.items[i].imageUrl,
+                ),
+                Divider(),
+              ],
+            ),
           ),
         ),
       ),
