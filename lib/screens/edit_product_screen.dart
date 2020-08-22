@@ -12,7 +12,7 @@ class EditProductScreen extends StatefulWidget {
 
 class _EditProductScreenState extends State<EditProductScreen> {
   final _priceFocusNode = FocusNode();
-  final _desciptionFocusNode = FocusNode();
+  final _descriptionFocusNode = FocusNode();
   final _imageUrlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
@@ -47,7 +47,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
     _imageUrlFocusNode.removeListener(_updateImageUrl);
     _priceFocusNode.dispose();
-    _desciptionFocusNode.dispose();
+    _descriptionFocusNode.dispose();
     _imageUrlFocusNode.dispose();
     _imageUrlController.dispose();
   }
@@ -133,7 +133,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 keyboardType: TextInputType.number,
                 focusNode: _priceFocusNode,
                 onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_desciptionFocusNode);
+                  FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
                 validator: (value) {
                   if (value.isEmpty) {
@@ -165,7 +165,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
-                focusNode: _desciptionFocusNode,
+                focusNode: _descriptionFocusNode,
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter a description.';

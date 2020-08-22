@@ -35,11 +35,12 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
           accentColor: Colors.orange,
-          textTheme: ThemeData.light().textTheme.copyWith(
-              // headline6: TextStyle(
-              //   color: Colors.white,
-              // ),
-              ),
+          fontFamily: 'Lato',
+          // textTheme: ThemeData.light().textTheme.copyWith(
+          // headline6: TextStyle(
+          //   color: Colors.white,
+          // ),
+          // ),
           // primaryIconTheme: IconThemeData(color: Colors.white),
           // primaryTextTheme: Theme.of(context).primaryTextTheme.apply(
           //       bodyColor: Colors.white,
@@ -47,11 +48,9 @@ class MyApp extends StatelessWidget {
           //     ),
           //TODO: LOOK MORE INTO THEME-ING
           // iconTheme: IconThemeData(size: ),
-          fontFamily: 'Lato',
         ),
-        // home: ProductsOverviewScreen(),
+        home: ProductsOverviewScreen(),
         routes: {
-          '/': (ctx) => ProductsOverviewScreen(),
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           OrdersScreen.routeName: (ctx) => OrdersScreen(),
