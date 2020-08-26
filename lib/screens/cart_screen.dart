@@ -8,6 +8,7 @@ import 'package:flutter_shop_app/providers/orders.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/cart';
+
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
@@ -32,23 +33,11 @@ class CartScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      NumberFormat.simpleCurrency(locale: 'tr')
-                          .format(cart.totalPrice),
+                      NumberFormat.simpleCurrency(locale: 'tr').format(cart.totalPrice),
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
-                  FlatButton(
-                    splashColor: Theme.of(context).primaryColor.withOpacity(.5),
-                    color: Theme.of(context).accentColor,
-                    onPressed: () {
-                      Provider.of<Orders>(context, listen: false).addOrder(
-                        cart.items.values.toList(),
-                        cart.totalPrice,
-                      );
-                      cart.clear();
-                    },
-                    child: Text('ORDER NOW'),
-                  ),
+                  OrderButton(cart: cart),
                 ],
               ),
             ),
@@ -71,6 +60,60 @@ class CartScreen extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key key,
+    @required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      splashColor: Theme.of(context).primaryColor.withOpacity(.5),
+      color: Theme.of(context).accentColor,
+      onPressed: (widget.cart.totalPrice <= 0 || _isLoading)
+          ? null
+          : () async {
+              setState(() {
+                _isLoading = true;
+              });
+              await Provider.of<Orders>(context, listen: false)
+                  .addOrder(
+                widget.cart.items.values.toList(),
+                widget.cart.totalPrice,
+              )
+                  .catchError((e) {
+                Scaffold.of(context)
+                  ..removeCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        e.toString(),
+                        textAlign: TextAlign.center,
+                      ),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+              });
+              setState(() {
+                _isLoading = false;
+              });
+              widget.cart.clear();
+            },
+      child: _isLoading ? CircularProgressIndicator() : Text('ORDER NOW'),
     );
   }
 }

@@ -56,6 +56,7 @@ class _ProductItemState extends State<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
@@ -81,7 +82,21 @@ class _ProductItemState extends State<ProductItem> {
               icon: Icon(
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
               ),
-              onPressed: product.toggleFavoriteStatus,
+              onPressed: () {
+                product.toggleFavoriteStatus().catchError((e) {
+                  scaffold
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          e.toString(),
+                          textAlign: TextAlign.center,
+                        ),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                });
+              },
               color: Theme.of(context).errorColor,
             ),
           ),
