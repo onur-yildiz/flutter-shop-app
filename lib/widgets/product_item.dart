@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop_app/providers/auth.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -59,6 +60,7 @@ class _ProductItemState extends State<ProductItem> {
     final scaffold = Scaffold.of(context);
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final authData = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -83,7 +85,7 @@ class _ProductItemState extends State<ProductItem> {
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
               ),
               onPressed: () {
-                product.toggleFavoriteStatus().catchError((e) {
+                product.toggleFavoriteStatus(authData.token, authData.userId).catchError((e) {
                   scaffold
                     ..removeCurrentSnackBar()
                     ..showSnackBar(

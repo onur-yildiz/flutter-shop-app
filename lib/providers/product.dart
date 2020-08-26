@@ -21,24 +21,44 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavoriteStatus() async {
-    final url = 'https://flutter-app-tutorial-cc123.firebaseio.com/products/$id.json';
+  Future<void> toggleFavoriteStatus(String token, String userId) async {
     isFavorite = !isFavorite;
     notifyListeners();
     try {
-      final response = await http.patch(
-        url,
-        body: json.encode({
-          'isFavorite': isFavorite,
-        }),
-      );
-      if (response.statusCode >= 400) {
-        throw HttpException('Could not add to favorites.');
+      final url =
+          'https://flutter-app-tutorial-cc123.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
+      if (isFavorite) {
+        final response = await http.put(
+          url,
+          body: json.encode(
+            isFavorite,
+          ),
+        );
+        if (response.statusCode >= 400) {
+          throw 'ERROR_PUT_FAV';
+        }
+      } else {
+        final url =
+            'https://flutter-app-tutorial-cc123.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
+        final response = await http.delete(url);
+        if (response.statusCode >= 400) {
+          throw 'ERROR_DELETE_FAV';
+        }
       }
     } catch (e) {
+      var errorMessage = 'Something went wrong.';
+      switch (e.toString()) {
+        case 'ERROR_DELETE_FAV':
+          errorMessage = 'Could not delete from favorites.';
+          break;
+        case 'ERROR_PUT_FAV':
+          errorMessage = 'Could not add to favorites';
+          break;
+        default:
+      }
       isFavorite = !isFavorite;
       notifyListeners();
-      throw e;
+      throw HttpException(errorMessage);
     }
   }
 }
