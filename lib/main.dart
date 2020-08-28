@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop_app/helpers/custom_route.dart';
 import 'package:flutter_shop_app/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -54,6 +55,12 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.deepOrange,
             accentColor: Colors.orange,
             fontFamily: 'Lato',
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: CustomPageTransitionBuilder(),
+                TargetPlatform.iOS: CustomPageTransitionBuilder(),
+              },
+            ),
             // textTheme: ThemeData.light().textTheme.copyWith(
             // headline6: TextStyle(
             //   color: Colors.white,
