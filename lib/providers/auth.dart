@@ -6,7 +6,7 @@ import 'package:flutter_shop_app/models/http_exception.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-// ***REMOVED***
+const APIKEY = '';
 
 class Auth with ChangeNotifier {
   String _token;
@@ -19,7 +19,9 @@ class Auth with ChangeNotifier {
   }
 
   String get token {
-    if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
+    if (_expiryDate != null &&
+        _expiryDate.isAfter(DateTime.now()) &&
+        _token != null) {
       return _token;
     }
     return null;
@@ -29,9 +31,10 @@ class Auth with ChangeNotifier {
     return _userId;
   }
 
-  Future<void> _authenticate(String email, String password, String urlSegment) async {
+  Future<void> _authenticate(
+      String email, String password, String urlSegment) async {
     final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=***REMOVED***';
+        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=$APIKEY';
     try {
       final response = await http.post(
         url,
@@ -83,7 +86,8 @@ class Auth with ChangeNotifier {
     if (!prefs.containsKey('userData')) {
       return false;
     }
-    final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
+    final extractedUserData =
+        json.decode(prefs.getString('userData')) as Map<String, Object>;
     final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
 
     if (expiryDate.isBefore(DateTime.now())) {
